@@ -6,10 +6,13 @@ package.name = minesweeper
 package.domain = org.qishuo.minesweeper
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
+source.exclude_dirs = tests, build, dist, .buildozer
+source.exclude = *.pyc, *.pyo, *~
 version = 0.2.0
 requirements = python3,kivy
-# 版本钉定（架构建议 Kivy 2.3.x + Python 3.11；p4a 侧由 python3 配方决定）
-# 若需严格钉定，在 CI 中使用固定 buildozer/p4a 版本镜像
+# 版本钉定（架构建议 Kivy 2.3.x + Python 3.11；与 CI 的 setup-python 3.11 对齐）
+# p4a 配方默认拉取 3.11 系列；显式声明避免漂移。
+android.python_version = 3.11
 
 # ---- 入口 ----
 # buildozer 默认入口即 source.dir 下的 main.py，无需额外声明
