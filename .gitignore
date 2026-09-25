@@ -1,0 +1,23 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+.venv/
+*.egg-info/
+
+# ---- 旧桌面版（Tkinter）构建产物 ----
+minesweeper/build/
+minesweeper/dist/
+minesweeper/build_venv/
+# minesweeper.exe 与 minesweeper.py 为已交付成品，保留入库
+
+# ---- 运行时数据（app 在 Android/桌面生成，非源码）----
+MineSweeper/
+*.tmp
+
+# ---- 工具数据 ----
+.workbuddy/
