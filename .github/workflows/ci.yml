@@ -141,6 +141,9 @@ jobs:
         working-directory: app
         env:
           BUILDOZER_ALLOW_ORG: "1"
+          # 强制 buildozer 使用 runner 预装 SDK（license 已接受、build-tools 现成）。
+          # 否则 buildozer 自建 ~/.buildozer SDK，license 交互在非终端下默认 N，aidl 装不上。
+          ANDROIDSDK: /usr/local/lib/android/sdk
         run: |
           buildozer android debug
       - name: Upload APK artifact
