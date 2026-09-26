@@ -137,6 +137,12 @@ jobs:
       - name: Accept Android SDK licenses
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          # buildozer 会自建 ~/.buildozer SDK 且非交互下 license 询问永远默认 N；
+          # 预放官方 license 哈希文件，sdkmanager 检测到即视为已接受，彻底绕开交互。
+          mkdir -p "$HOME/.buildozer/android/platform/android-sdk/licenses"
+          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-license"
+          echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license"
+          echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-license-old"
       - name: Build APK (android debug)
         working-directory: app
         env:
