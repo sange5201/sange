@@ -25,7 +25,7 @@ from core.config import LEVELS
 from core.events import EventBus, GameEvent
 from core.game import GameSession
 from core.storage import JsonStorage, StorageBackend
-from platform import android_bridge
+from osenv import android_bridge
 from presentation.touch.interaction import TouchDispatcher
 from presentation.ui.board_widget import BoardWidget
 from presentation.ui.drawer import LevelDrawer
