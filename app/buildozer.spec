@@ -18,9 +18,9 @@ android.python_version = 3.11
 # buildozer 默认入口即 source.dir 下的 main.py，无需额外声明
 
 # ---- 界面 ----
-# orientation=sensor：支持横竖屏（UX §2.5：旋转不重置对局）。
-# 注意：buildozer spec 不支持行内注释，注释必须独占一行，否则会被解析进值里。
-orientation = sensor
+# orientation 合法值仅 landscape/portrait/all（buildozer 校验）。
+# all → Android fullSensor：横竖屏随传感器旋转（UX §2.5：旋转不重置对局）。
+orientation = all
 fullscreen = 0
 
 # ---- 权限 ----
