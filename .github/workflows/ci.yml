@@ -134,19 +134,22 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install "cython<3.0" buildozer
-      - name: Accept Android SDK licenses + shim sdkmanager
+      - name: Provision Android SDK (reuse runner's preinstalled SDK)
         run: |
-          # buildozer 1.6 只认旧版 tools/bin/sdkmanager 路径，而新版 cmdline-tools
-          # 已是 cmdline-tools/latest/bin 结构。放一个 shim 包装脚本转发到 runner
-          # 预装的新版 sdkmanager（Java 17 兼容），buildozer 即视 SDK 为已安装。
-          # 同时预放官方 license 哈希，sdkmanager 检测到即视为已接受，绕开交互。
-          BSDK="$HOME/.buildozer/android/platform/android-sdk"
-          mkdir -p "$BSDK/tools/bin" "$BSDK/licenses"
-          printf '#!/usr/bin/env bash\nexec /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "$@"\n' > "$BSDK/tools/bin/sdkmanager"
-          chmod +x "$BSDK/tools/bin/sdkmanager"
-          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$BSDK/licenses/android-sdk-license"
-          echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$BSDK/licenses/android-sdk-preview-license"
-          echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$BSDK/licenses/android-sdk-license-old"
+          # runner 已预装完整 SDK 于 /usr/local/lib/android/sdk，自带可用的
+          # cmdline-tools/latest/bin/sdkmanager。buildozer.spec 通过 android.sdk_path
+          # 指向它，避免 buildozer 自建 SDK 时 p4a 找不到 sdkmanager。
+          # 这里只补装目标平台 + build-tools 并接受 license。
+          SDK=/usr/local/lib/android/sdk
+          SM=$(ls "$SDK"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -1)
+          echo "sdkmanager=$SM"
+          yes | "$SM" --sdk_root="$SDK" --licenses >/dev/null || true
+          "$SM" --sdk_root="$SDK" "platform-tools" "platforms;android-33" "build-tools;33.0.2" "build-tools;34.0.0" >/dev/null
+          # 兼容 p4a 旧版对 tools/bin/sdkmanager 的检查：补一个 shim 转发到真实 sdkmanager
+          mkdir -p "$SDK/tools/bin"
+          printf '#!/usr/bin/env bash\nexec "%s" "$@"\n' "$SM" > "$SDK/tools/bin/sdkmanager"
+          chmod +x "$SDK/tools/bin/sdkmanager"
+          ls -l "$SDK/cmdline-tools"/*/bin/sdkmanager "$SDK/tools/bin/sdkmanager"
       - name: Build APK (android debug)
         working-directory: app
         env:

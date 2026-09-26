@@ -32,6 +32,9 @@ android.api = 33
 android.minapi = 23
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
+# 云 CI（GitHub ubuntu runner）已预装完整 Android SDK，直接复用，
+# 避免 buildozer 自建 SDK 时 cmdline-tools/sdkmanager 路径不被 p4a 识别。
+android.sdk_path = /usr/local/lib/android/sdk
 
 # ---- 图标（可选，缺失时 buildozer 用默认图标）----
 # icon.filename = %(source.dir)s/data/icon.png
