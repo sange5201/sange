@@ -3,8 +3,8 @@
 # 为什么需要它：当前 AI 会话没有你的 GitHub 凭据，无法替你 push；本机一键脚本由你本人在有网终端运行。
 #
 # 用法：
-#   1. 用记事本打开本文件，把下面 $RepoUrl 改成你新建的「空」GitHub 仓库地址
-#      （例如 https://github.com/你的用户名/你的仓库名.git）
+#   1. 默认已填好仓库地址 https://github.com/sange5201/sange.git，一般无需改动；
+#      若要推到别的仓库，用记事本改下面 $RepoUrl 即可。
 #   2. 在本文件所在目录打开 PowerShell（地址栏输入 powershell 回车），执行：
 #        .\push-and-build.ps1
 #   3. 推送成功后脚本会自动打开 Actions 页；等 build-apk job 完成即可下载 APK。
@@ -12,7 +12,7 @@
 # 注意：仓库请建为「空仓库」（不要勾 README / .gitignore / License），否则首次 push 会被拒绝。
 
 param(
-    [string]$RepoUrl = "https://github.com/<你的用户名>/<仓库名>.git"
+    [string]$RepoUrl = "https://github.com/sange5201/sange.git"
 )
 
 if ($RepoUrl -like "*<*") {
