@@ -29,7 +29,9 @@ android.permissions =
 
 # ---- Android 目标 ----
 android.api = 33
-android.minapi = 23
+# minapi 须 ≥ 24：Python 3.14 的 remote_debugging.c 用 preadv/pwritev，
+# 这两个函数在 NDK r28c 里 API 23 不声明（API 24 起才有），否则交叉编译直接报错。
+android.minapi = 24
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
 # 云 CI（GitHub ubuntu runner）已预装完整 Android SDK，直接复用，
