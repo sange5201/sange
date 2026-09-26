@@ -128,8 +128,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            autoconf automake libtool pkg-config cmake ccache cpio \
+            autoconf automake libtool libtool-bin libltdl-dev m4 pkg-config cmake ccache cpio \
             zlib1g-dev libncurses-dev libffi-dev libssl-dev build-essential
+          echo "--- verify libtool m4 present ---"
+          ls -l /usr/share/aclocal/libtool.m4 || echo "MISSING libtool.m4"
+          which libtoolize || echo "MISSING libtoolize"
       - name: Install buildozer
         run: |
           python -m pip install --upgrade pip
@@ -154,6 +157,10 @@ jobs:
         working-directory: app
         env:
           BUILDOZER_ALLOW_ORG: "1"
+          # libffi 在 autoreconf 时需要 libtool 的 m4 宏（LT_SYS_SYMBOL_USCORE）。
+          # 显式把系统 aclocal 目录交给 aclocal，并确保 libtoolize 可用。
+          ACLOCAL_PATH: /usr/share/aclocal
+          LIBTOOLIZE: libtoolize
         run: |
           buildozer android debug
       - name: Upload APK artifact
