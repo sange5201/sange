@@ -74,7 +74,13 @@ jobs:
       - name: Run UI smoke under xvfb
         working-directory: app
         env:
-          KIVY_WINDOW: headless
+          # Kivy 2.x 无 headless 后端，xvfb 下必须用 sdl2；
+          # 无头环境 metrics 自动检测返回 None（dpi2px TypeError），显式喂齐 DPI/density。
+          KIVY_WINDOW: sdl2
+          KIVY_NO_ARGS: "1"
+          KIVY_DPI: "96"
+          KIVY_METRICS_DENSITY: "1"
+          KIVY_METRICS_FONTSCALE: "1"
         run: |
           # test_smoke.py 含模块级 importorskip 守卫：
           # Epic E 落地后此处真正运行 5 条 UI 烟雾断言（格数/揭示/长按/双击chord/暂停恢复）。

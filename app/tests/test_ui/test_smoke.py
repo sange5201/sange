@@ -22,8 +22,14 @@ import os
 
 import pytest
 
-# Kivy 必须在 import app 之前设置窗口后端；先尝试 headless
-os.environ.setdefault("KIVY_WINDOW", "headless")
+# Kivy 必须在 import app 之前设置窗口后端与无头 metrics：
+# Kivy 2.x 无 headless 后端 → 用 sdl2（CI 由 xvfb 提供虚拟显示）；
+# 无头下 Kivy 自动检测 DPI/density 会得到 None（dpi2px TypeError），须显式喂齐。
+os.environ.setdefault("KIVY_NO_ARGS", "1")
+os.environ.setdefault("KIVY_WINDOW", "sdl2")
+os.environ.setdefault("KIVY_DPI", "96")
+os.environ.setdefault("KIVY_METRICS_DENSITY", "1")
+os.environ.setdefault("KIVY_METRICS_FONTSCALE", "1")
 
 pytest.importorskip("kivy")  # 未装 Kivy 时整模块跳过（本地开发/CI 装 kivy 后运行）
 
