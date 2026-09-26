@@ -31,8 +31,15 @@ jobs:
       - name: Run core tests with coverage gate
         working-directory: app
         run: |
+          set -o pipefail
           python -m pytest tests/test_core \
-            --cov=core --cov-report=term-missing --cov-report=xml --cov-fail-under=90
+            --cov=core --cov-report=term-missing --cov-report=xml --cov-fail-under=90 \
+            -v --tb=short 2>&1 | tee /tmp/pytest-out.txt
+      - name: Dump failure tail to annotations (self-diagnostics)
+        if: failure()
+        run: |
+          TAIL=$(tail -60 /tmp/pytest-out.txt | sed ':a;N;$!ba;s/\n/%0A/g' | cut -c1-3500)
+          echo "::error title=pytest-tail::${TAIL:-no log captured}"
       - name: Upload coverage
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,7 +78,13 @@ jobs:
         run: |
           # test_smoke.py 含模块级 importorskip 守卫：
           # Epic E 落地后此处真正运行 5 条 UI 烟雾断言（格数/揭示/长按/双击chord/暂停恢复）。
-          xvfb-run -a python -m pytest tests/test_ui -v
+          set -o pipefail
+          xvfb-run -a python -m pytest tests/test_ui -v --tb=short 2>&1 | tee /tmp/ui-out.txt
+      - name: Dump UI failure tail to annotations (self-diagnostics)
+        if: failure()
+        run: |
+          TAIL=$(tail -60 /tmp/ui-out.txt | sed ':a;N;$!ba;s/\n/%0A/g' | cut -c1-3500)
+          echo "::error title=ui-smoke-tail::${TAIL:-no log captured}"
 
   # ---------- 无 UI 可玩启动冒烟（Sprint 1 退出证明） ----------
   cli-smoke:
