@@ -32,14 +32,17 @@ android.permissions =
 
 # ---- Android 目标 ----
 android.api = 33
-# minapi 须 ≥ 24：Python 3.14 的 remote_debugging.c 用 preadv/pwritev，
-# 这两个函数在 NDK r28c 里 API 23 不声明（API 24 起才有），否则交叉编译直接报错。
+# minapi 24：稳妥下限（Python 3.11 在 Android 6.0 已覆盖绝大部分设备）。
 android.minapi = 24
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
-# 云 CI（GitHub ubuntu runner）已预装完整 Android SDK，直接复用，
-# 避免 buildozer 自建 SDK 时 cmdline-tools/sdkmanager 路径不被 p4a 识别。
+# 复用云 CI（GitHub ubuntu runner）预装的完整 Android SDK，避免 buildozer 自建 SDK
+# 时 cmdline-tools/sdkmanager 路径不被 p4a 识别。
 android.sdk_path = /usr/local/lib/android/sdk
+# 钉定 p4a 到 v2024.1.21：该版本 python3 配方默认 Python 3.11（Kivy/pyjnius/android
+# 生态齐全）。buildozer 默认 clone 的 p4a master 锁了 Python 3.14，导致 pyjnius 等
+# 无 cp314 轮子、构建失败。
+p4a.branch = v2024.1.21
 
 # ---- 图标（可选，缺失时 buildozer 用默认图标）----
 # icon.filename = %(source.dir)s/data/icon.png
