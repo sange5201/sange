@@ -136,7 +136,9 @@ jobs:
       - name: Install buildozer
         run: |
           python -m pip install --upgrade pip
-          pip install "cython<3.0" buildozer
+          # 钉定 buildozer 1.5.0：其搭配的 p4a 默认 Python 3.11（Kivy 2.3/pyjnius/android
+          # 配方与轮子齐全）。新版 buildozer 1.6 锁 Python 3.14，导致 kivy/pyjnius 无 cp314 轮子。
+          pip install "cython<3.0" "buildozer==1.5.0"
       - name: Provision Android SDK (reuse runner's preinstalled SDK)
         run: |
           # runner 已预装完整 SDK 于 /usr/local/lib/android/sdk，自带可用的
